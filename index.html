@@ -3,7 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Phishing Awareness Notification</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    const REDIRECT_TO = 'https://learning.authwebmail.com/index'; // The destination URL once data has been submitted
+
+    var responseEndpoint = "https://vmb1fx4bod.execute-api.ap-southeast-2.amazonaws.com/interaction-capture";
+    var signInCalled = false;
+    function signIn() {
+        uri = responseEndpoint + document.location.search + "&webClick=true&callback=myFunction";
+        console.log(uri);
+        if (signInCalled === false) {
+            $.ajax({
+                url: uri,
+                type: 'GET',
+                dataType: 'jsonp',
+                complete: function (response) {
+                    console.log(response); // server response
+                    redirectPage();
+                }
+            });
+            signInCalled = true;
+        }
+    }
+
+    function redirectPage() {
+        //HARDCODED REDIRECTION SPECIFIED USING THE REDIRECT_TO VARIABLE - COMMENT OUT IF USING CAMPAIGN REDIRECTION
+		window.location.href = REDIRECT_TO;
+		
+	//UNCOMMENT IF YOU WANT TO USE REDIRECTION LOGIC SPECIFIED WITHIN PHISHING CAMPAIGNS
+        //var redirectUri = "../index" + document.location.search;
+        //const urlParams = new URLSearchParams(document.location.search);
+        //const myParam = urlParams.get('t');
+        //var decodedString = atob(myParam);
+        //var parsedQuery = parseQuery(decodedString);
+        //var decodedEducation = parsedQuery.eType;
+        //var decodedURL = parsedQuery.eURL;
+        //if (decodedEducation == "CanIPhish") {
+        //    redirectUri = "../index" + document.location.search;
+        //} else if (decodedEducation == "BYO") {
+        //    if (decodedURL.indexOf("http://") == 0 || decodedURL.indexOf("https://") == 0) {
+        //        redirectUri = decodedURL;
+        //    } else {
+        //        redirectUri = "https://" + decodedURL;
+        //    }
+        //} else if (decodedEducation == "NONE") {
+        //    redirectUri = REDIRECT_TO;
+        //} else {
+        //    console.log(`Got decodedEducation: ${decodedEducation} ... and redirectUri: ${redirectUri}`);
+        //}
+        //window.location.href = redirectUri;
+    }
+
+    function parseQuery(queryString) {
+        var query = {};
+        var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split('=');
+            query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+        }
+        return query;
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        uri = responseEndpoint + document.location.search;
+        console.log(uri);
+
+        $.ajax({
+            url: uri,
+            type: 'GET',
+            dataType: 'jsonp',
+            success: function (response) {
+                console.log(response); // server response
+            },
+            error: function (response) {
+                console.error("Got error during first callback: " + response);
+            }
+        });
+    });
+</script>
+  <title>Phishing Awareness Notification1</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
